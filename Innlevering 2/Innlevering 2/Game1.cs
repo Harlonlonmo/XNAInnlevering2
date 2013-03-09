@@ -22,7 +22,7 @@ namespace Innlevering_2
 
         ContentLoader<SpriteFont> fontLoader;
         ContentLoader<Texture2D> imageLoader;
-        ContentLoader<SoundEffectInstance> soundLoader;
+        ContentLoader<SoundEffect> soundLoader;
 
         GameState gameState;
         
@@ -43,8 +43,8 @@ namespace Innlevering_2
             imageLoader = new ContentLoader<Texture2D>(this);
             Services.AddService(typeof(ContentLoader<Texture2D>), imageLoader);
 
-            soundLoader = new ContentLoader<SoundEffectInstance>(this);
-            Services.AddService(typeof(ContentLoader<SoundEffectInstance>), soundLoader);
+            soundLoader = new ContentLoader<SoundEffect>(this);
+            Services.AddService(typeof(ContentLoader<SoundEffect>), soundLoader);
         }
 
         protected override void Initialize()
@@ -59,6 +59,8 @@ namespace Innlevering_2
 
             imageLoader.load("Background");
             fontLoader.load("ButtonFont");
+            soundLoader.load("test");
+            soundLoader.load("test2");
         }
 
         protected override void Update(GameTime gameTime)

@@ -37,7 +37,7 @@ namespace Innlevering_2
 
             //Movement
             if (controller.gamePadState.ThumbSticks.Left.X != 0f)
-                Position += new Vector2(controller.gamePadState.ThumbSticks.Left.X * speed, 0);
+                Position += controller.gamePadState.ThumbSticks.Left * speed * Vector2.UnitX;
         }
 
         public void Draw(SpriteBatch spriteBatch/*, GameTime gameTime*/)
