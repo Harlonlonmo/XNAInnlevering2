@@ -25,6 +25,7 @@ namespace Innlevering_2
         ContentLoader<SoundEffectInstance> soundLoader;
 
         GameState gameState;
+        
 
         public Game1()
         {
@@ -73,6 +74,7 @@ namespace Innlevering_2
             spriteBatch.Begin();
 
             gameState.Draw(spriteBatch, gameTime);
+
             spriteBatch.End();
             base.Draw(gameTime);
         }

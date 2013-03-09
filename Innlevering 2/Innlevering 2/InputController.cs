@@ -51,6 +51,7 @@ namespace Innlevering_2
             if (!gamePadChanged) return false;
             return gamePadState.IsButtonDown(button) && oldGs.IsButtonUp(button);
         }
+
         public bool MouseButtonWasPressed(MouseButton button)
         {
             if (!mouseChanged) return false;
