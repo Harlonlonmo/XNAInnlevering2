@@ -13,8 +13,6 @@ namespace Innlevering_2
 
         public Game Game { get; protected set; }
 
-        private Vector2 position;
-
 
         public GameObject(Game game)
         {
