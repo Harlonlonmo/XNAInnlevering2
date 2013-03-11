@@ -73,11 +73,8 @@ namespace Innlevering_2
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            spriteBatch.Begin();
-
             gameState.Draw(spriteBatch, gameTime);
 
-            spriteBatch.End();
             base.Draw(gameTime);
         }
 

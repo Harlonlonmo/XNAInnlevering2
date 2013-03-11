@@ -10,14 +10,13 @@ using Microsoft.Xna.Framework.Input;
 
 using C3.XNA;
 
-namespace Innlevering_2
+namespace Innlevering_2.GameObjects
 {
     class Player : GameObject
     {
         public Point PlayerSize { get; private set; }
         //public Physics physics;
         public float speed = 2f;
-        private Room room;
 
 
         public Player(Game game, Vector2 PlayerPosition, Point PlayerSize, float speed):base(game)
@@ -28,10 +27,9 @@ namespace Innlevering_2
 
         }
 
-        public void Update(GameTime gameTime, Room room)
+        public override void Update(GameTime gameTime)
         {
             InputController controller = (InputController)Game.Services.GetService(typeof(InputController));
-            this.room = room;
 
             //physics.Update(gameTime);
 
@@ -40,7 +38,7 @@ namespace Innlevering_2
                 Position += controller.gamePadState.ThumbSticks.Left * speed * Vector2.UnitX;
         }
 
-        public void Draw(SpriteBatch spriteBatch/*, GameTime gameTime*/)
+        public override void Draw(SpriteBatch spriteBatch/*, GameTime gameTime*/)
         {
             Primitives2D.FillRectangle(spriteBatch, new Rectangle(
                 (int) Position.X, (int) Position.Y, 
@@ -48,12 +46,12 @@ namespace Innlevering_2
                 Color.Brown);
         }
 
-        protected bool Collide()
+        /*protected bool Collide()
         {
             Rectangle playerRect = new Rectangle((int)Position.X, (int)Position.Y, PlayerSize.X, PlayerSize.Y);
             Rectangle mapFrameRect = new Rectangle(room.PosX, room.PosY, room.Width, room.Height);
 
             return (playerRect.Intersects(mapFrameRect));
-        }
+        }*/
     }
 }

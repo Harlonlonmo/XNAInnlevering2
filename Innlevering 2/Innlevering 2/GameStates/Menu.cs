@@ -15,7 +15,8 @@ namespace Innlevering_2.GameStates
             SpriteFont buttonFont = ((ContentLoader<SpriteFont>)Game.Services.GetService(typeof(ContentLoader<SpriteFont>))).get("ButtonFont");
             gameMenu = new GameMenu(Game, GameMenu.Direction.Vertical);
             gameMenu.Buttons.Add(new Button(new Rectangle(50, 50, 200, 50), game, Color.Green, Color.GreenYellow, Button.TEXT_ALIGN_MID, "Game", buttonFont));
-            gameMenu.Buttons.Add(new Button(new Rectangle(50, 110, 200, 50), game, Color.Green, Color.GreenYellow, Button.TEXT_ALIGN_MID, "Exit", buttonFont));
+            gameMenu.Buttons.Add(new Button(new Rectangle(50, 110, 200, 50), game, Color.Green, Color.GreenYellow, Button.TEXT_ALIGN_MID, "MaskTest", buttonFont));
+            gameMenu.Buttons.Add(new Button(new Rectangle(50, 170, 200, 50), game, Color.Green, Color.GreenYellow, Button.TEXT_ALIGN_MID, "Exit", buttonFont));
         }
 
         public override void Update(GameTime gameTime)
@@ -29,6 +30,9 @@ namespace Innlevering_2.GameStates
                     ((Game1)Game).changeState(new InGame(Game));
                     break;
                 case 1:
+                    ((Game1)Game).changeState(new maskTest(Game));
+                    break;
+                case 2:
                     Game.Exit();
                     break;
             }
@@ -43,9 +47,11 @@ namespace Innlevering_2.GameStates
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
+            spriteBatch.Begin();
             spriteBatch.Draw(((ContentLoader<Texture2D>)Game.Services.GetService(typeof(ContentLoader<Texture2D>))).get("Background"),
                 new Rectangle(0, 0, Game.Window.ClientBounds.Width, Game.Window.ClientBounds.Height), Color.White);
             gameMenu.Draw(spriteBatch, gameTime);
+            spriteBatch.End();
         }
     }
 }

@@ -5,13 +5,13 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Audio;
+using Innlevering_2.GameObjects;
 
 namespace Innlevering_2.GameStates
 {
     public class InGame : GameState
     {
         Player player;
-        Room room;
 
 
         SoundEffectInstance test; 
@@ -19,7 +19,6 @@ namespace Innlevering_2.GameStates
 
         public InGame(Game game) : base(game) 
         {
-            room = new Room(0, 0, 790, 470);
             player = new Player(game, new Vector2(100f, 100f), new Point(30, 30), 2f);
             test = ((ContentLoader<SoundEffect>)Game.Services.GetService(typeof(ContentLoader<SoundEffect>))).get("test").CreateInstance();
             test2 = ((ContentLoader<SoundEffect>)Game.Services.GetService(typeof(ContentLoader<SoundEffect>))).get("test").CreateInstance();
@@ -33,13 +32,14 @@ namespace Innlevering_2.GameStates
             {
                 test2.Play();
             }
-            player.Update(gameTime, room);
+            player.Update(gameTime);
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            room.Draw(spriteBatch,gameTime);
+            spriteBatch.Begin();
             player.Draw(spriteBatch);
+            spriteBatch.End();
         }
     }
 }
