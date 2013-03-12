@@ -39,14 +39,18 @@ namespace Innlevering_2.GameStates
 
         public override void Update(GameTime gameTime)
         {
-            player.Update(gameTime);
-
-            //collide = level.Collide(player.Bounds);
-
+            bool recalculate = false;
             MouseState ms = Mouse.GetState();
             if (ms.LeftButton == ButtonState.Pressed)
             {
                 ((DestructableLevel)level).removeCircle(new Vector2(ms.X, ms.Y), 20);
+                recalculate = true;
+            }
+            Vector2 oldpos = player.Position;
+            player.Update(gameTime);
+            if (player.Position != oldpos || recalculate)
+            {
+                collide = level.Collide(player.Bounds);
             }
         }
 
@@ -57,6 +61,9 @@ namespace Innlevering_2.GameStates
             if(collide)
                 Game.GraphicsDevice.Clear(Color.Red);
             level.Draw(spriteBatch);
+            spriteBatch.Begin();
+            player.Draw(spriteBatch);
+            spriteBatch.End();
         }
     }
 }

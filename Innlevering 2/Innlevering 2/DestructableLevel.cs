@@ -28,13 +28,17 @@ namespace Innlevering_2
 
         public override bool Collide(Rectangle rect)
         {
-            int[] data = new int[rect.Width * rect.Height];
-            mask.GetData(1, rect, data, 0, rect.Width * rect.Height);
-            foreach (int i in data)
+            if (rect.X < 0 || rect.X + rect.Width > mask.Width || rect.Y < 0 || rect.Y + rect.Height > mask.Height) return true;
+            uint[] data = new uint[mask.Width * mask.Height];
+            mask.GetData(data);
+            for (int y = rect.Y; y < rect.Height + rect.Y; y++)
             {
-                if (i == 0)
+                for (int x = rect.X; x < rect.Width + rect.X; x++)
                 {
-                    return true;
+                    if (data[x + y* mask.Width] == 0xFF000000)
+                    {
+                        return true;
+                    }
                 }
             }
             return false;
@@ -42,7 +46,7 @@ namespace Innlevering_2
 
         public override bool Collide(Point point)
         {
-            int[] data = new int[mask.Width * mask.Height];
+            uint[] data = new uint[mask.Width * mask.Height];
             mask.GetData(data);
             if (data[point.X + point.Y * mask.Width] == 0)
             {
