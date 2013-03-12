@@ -15,6 +15,13 @@ namespace Innlevering_2.GameObjects
     class Player : GameObject
     {
         public Point PlayerSize { get; private set; }
+        public Rectangle Bounds
+        {
+            get
+            {
+                return new Rectangle((int)(Position.X), (int)(Position.Y), PlayerSize.X, PlayerSize.Y);
+            }
+        }
         //public Physics physics;
         public float speed = 2f;
 
@@ -31,11 +38,23 @@ namespace Innlevering_2.GameObjects
         {
             InputController controller = (InputController)Game.Services.GetService(typeof(InputController));
 
-            //physics.Update(gameTime);
+            Vector2 move = Vector2.Zero;
 
             //Movement
             if (controller.gamePadState.ThumbSticks.Left.X != 0f)
-                Position += controller.gamePadState.ThumbSticks.Left * speed * Vector2.UnitX;
+                move += controller.gamePadState.ThumbSticks.Left * Vector2.UnitX;
+            if (controller.gamePadState.ThumbSticks.Left.Y != 0f)
+                move -= controller.gamePadState.ThumbSticks.Left * Vector2.UnitY;
+            if (controller.keyboardState.IsKeyDown(Keys.W))
+                move.Y = -1;
+            if (controller.keyboardState.IsKeyDown(Keys.S))
+                move.Y = 1;
+            if (controller.keyboardState.IsKeyDown(Keys.A))
+                move.X = -1;
+            if (controller.keyboardState.IsKeyDown(Keys.D))
+                move.X = 1;
+
+            Position += move * speed;
         }
 
         public override void Draw(SpriteBatch spriteBatch/*, GameTime gameTime*/)
@@ -45,6 +64,8 @@ namespace Innlevering_2.GameObjects
                 PlayerSize.X, PlayerSize.Y), 
                 Color.Brown);
         }
+
+        
 
         /*protected bool Collide()
         {

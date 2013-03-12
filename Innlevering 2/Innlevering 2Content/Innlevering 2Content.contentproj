@@ -85,18 +85,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="redplanet512.png">
-      <Name>redplanet512</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="whitedots_0.png">
-      <Name>whitedots_0</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="AlphaMap.fx">
       <Name>AlphaMap</Name>
       <Importer>EffectImporter</Importer>
@@ -135,6 +123,13 @@
   <ItemGroup>
     <Compile Include="circle.png">
       <Name>circle</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="redplanet512.png">
+      <Name>redplanet512</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

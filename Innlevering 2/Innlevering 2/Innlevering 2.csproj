@@ -121,6 +121,9 @@
     <Compile Include="GUI\Button.cs" />
     <Compile Include="GUI\GameMenu.cs" />
     <Compile Include="GameObjects\Player.cs" />
+    <Compile Include="DestructableLevel.cs" />
+    <Compile Include="Level.cs" />
+    <Compile Include="MultiuplayerInput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />
