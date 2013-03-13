@@ -26,7 +26,7 @@ namespace Innlevering_2.GameStates
         {
             LoadContent(game.Content);
             level = new DestructableLevel(Game, _Planet, _AlphaMap);
-            player = new Player(Game, new Vector2(200, 0), new Point(20,20), 5);
+            player = new Player(Game, new Vector2(200, 0), new Rectangle(0,0,20,20), 50);
         }
 
         public void LoadContent(ContentManager Content)
@@ -35,31 +35,59 @@ namespace Innlevering_2.GameStates
             _AlphaMap = Content.Load<Texture2D>("Dots");
         }
 
-        bool collide = false;
 
         public override void Update(GameTime gameTime)
         {
-            bool recalculate = false;
+
             MouseState ms = Mouse.GetState();
             if (ms.LeftButton == ButtonState.Pressed)
             {
                 ((DestructableLevel)level).removeCircle(new Vector2(ms.X, ms.Y), 20);
-                recalculate = true;
+
             }
-            Vector2 oldpos = player.Position;
-            player.Update(gameTime);
-            if (player.Position != oldpos || recalculate)
+
+            InputController controller = (InputController)Game.Services.GetService(typeof(InputController));
+
+            Vector2 move = Vector2.Zero;
+
+            //Movement
+            if (controller.gamePadState.ThumbSticks.Left.X != 0f)
+                move += controller.gamePadState.ThumbSticks.Left * Vector2.UnitX;
+            if (controller.gamePadState.ThumbSticks.Left.Y != 0f)
+                move -= controller.gamePadState.ThumbSticks.Left * Vector2.UnitY;
+            if (controller.keyboardState.IsKeyDown(Keys.W))
+                move.Y = -1;
+            if (controller.keyboardState.IsKeyDown(Keys.S))
+                move.Y = 1;
+            if (controller.keyboardState.IsKeyDown(Keys.A))
+                move.X = -1;
+            if (controller.keyboardState.IsKeyDown(Keys.D))
+                move.X = 1;
+
+
+
+            if (player.Grounded)
             {
-                collide = level.Collide(player.Bounds);
+                if (controller.KeyWasPressed(Keys.Space) || controller.ButtonWasPressed(Buttons.A))
+                {
+                    player.jump();
+                }
+                player.TryWalk(move * player.Speed * (float)gameTime.ElapsedGameTime.TotalSeconds, level);
             }
+            else
+            {
+                player.TryMove(move * player.Speed * (float)gameTime.ElapsedGameTime.TotalSeconds, level);
+                player.Fall(gameTime, level);
+            }
+            
+
         }
 
         
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            if(collide)
-                Game.GraphicsDevice.Clear(Color.Red);
+
             level.Draw(spriteBatch);
             spriteBatch.Begin();
             player.Draw(spriteBatch);

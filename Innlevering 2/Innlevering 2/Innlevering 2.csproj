@@ -120,6 +120,7 @@
     <Compile Include="GameStates\maskTest.cs" />
     <Compile Include="GameStates\InGame.cs" />
     <Compile Include="GameStates\Menu.cs" />
+    <Compile Include="ICollidable.cs" />
     <Compile Include="InputController.cs" />
     <Compile Include="GUI\Button.cs" />
     <Compile Include="GUI\GameMenu.cs" />

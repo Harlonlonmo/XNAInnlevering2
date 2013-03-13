@@ -17,6 +17,8 @@ namespace Innlevering_2
         private Effect _AlphaShader;
         private Texture2D _circle;
 
+        private uint[] collisionData;
+
         public DestructableLevel(Game game, Texture2D texture, Texture2D mask)
             : base(game)
         {
@@ -24,24 +26,72 @@ namespace Innlevering_2
             this.mask = mask;
             _AlphaShader = Game.Content.Load<Effect>("AlphaMap");
             _circle = Game.Content.Load<Texture2D>("circle");
+
+            collisionData = new uint[mask.Width * mask.Height];
+            UpdateCollisionData();
         }
 
-        public override bool Collide(Rectangle rect)
+        /*public override bool Collide(Rectangle rect)
         {
             if (rect.X < 0 || rect.X + rect.Width > mask.Width || rect.Y < 0 || rect.Y + rect.Height > mask.Height) return true;
-            uint[] data = new uint[mask.Width * mask.Height];
-            mask.GetData(data);
+
+            
             for (int y = rect.Y; y < rect.Height + rect.Y; y++)
             {
                 for (int x = rect.X; x < rect.Width + rect.X; x++)
                 {
-                    if (data[x + y* mask.Width] == 0xFF000000)
+                    if (collisionData[x + y * mask.Width] == 0xFF000000)
                     {
                         return true;
                     }
                 }
             }
             return false;
+        }*/
+        public override bool Collide(Rectangle rect)
+        {
+            if (rect.X < 0 || rect.X + rect.Width > mask.Width || rect.Y < 0 || rect.Y + rect.Height > mask.Height) return true;
+
+            for (int x = rect.X; x < rect.Width + rect.X; x++)
+            {
+                if (collisionData[x + rect.Y * mask.Width] == 0xFF000000)
+                {
+                    return true;
+                }
+            }
+            if (rect.Height > 1)
+            {
+                for (int x = rect.X; x < rect.Width + rect.X; x++)
+                {
+                    if (collisionData[x + (rect.Y + rect.Height - 1) * mask.Width] == 0xFF000000)
+                    {
+                        return true;
+                    }
+                }
+            }
+            for (int y = rect.Y; y < rect.Height + rect.Y; y++)
+            {
+                if (collisionData[rect.X + y * mask.Width] == 0xFF000000)
+                {
+                    return true;
+                }
+            }
+            if (rect.Width > 1)
+            {
+                for (int y = rect.Y; y < rect.Height + rect.Y; y++)
+                {
+                    if (collisionData[(rect.X + rect.Width - 1) + y * mask.Width] == 0xFF000000)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }/**/
+
+        public void UpdateCollisionData()
+        {
+            mask.GetData(collisionData);
         }
 
         public override bool Collide(Point point)
@@ -66,6 +116,7 @@ namespace Innlevering_2
             spriteBatch.End();
             Game.GraphicsDevice.SetRenderTarget(null);
             mask = target;
+            UpdateCollisionData(/*new Rectangle((int)Math.Floor(position.X - radius), (int)Math.Floor(position.Y - radius), (int)Math.Ceiling(radius * 2), (int)Math.Ceiling(radius * 2))*/);
         }
 
         public override void Draw(SpriteBatch spriteBatch)

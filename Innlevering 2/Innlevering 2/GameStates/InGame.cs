@@ -19,7 +19,7 @@ namespace Innlevering_2.GameStates
 
         public InGame(Game game) : base(game) 
         {
-            player = new Player(game, new Vector2(100f, 100f), new Point(30, 30), 2f);
+            player = new Player(game, new Vector2(100f, 100f), new Rectangle(0,0,30, 30), 2f);
             test = ((ContentLoader<SoundEffect>)Game.Services.GetService(typeof(ContentLoader<SoundEffect>))).get("test").CreateInstance();
             test2 = ((ContentLoader<SoundEffect>)Game.Services.GetService(typeof(ContentLoader<SoundEffect>))).get("test").CreateInstance();
             test.Play();

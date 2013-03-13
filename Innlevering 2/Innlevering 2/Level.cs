@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Innlevering_2
 {
-    public class Level
+    public class Level : ICollidable
     {
 
         public Rectangle Bounds { get; protected set; }

@@ -10,6 +10,8 @@ namespace Innlevering_2
     public abstract class GameObject
     {
         public Vector2 Position { get; protected set; }
+        public Vector2 DeltaS { get; protected set; }
+        public Vector2 Gravity { get; protected set; }
 
         public Game Game { get; protected set; }
 

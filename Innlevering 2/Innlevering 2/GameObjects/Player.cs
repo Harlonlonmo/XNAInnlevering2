@@ -14,58 +14,88 @@ namespace Innlevering_2.GameObjects
 {
     class Player : GameObject
     {
-        public Point PlayerSize { get; private set; }
+        private Rectangle relativeBounds;
         public Rectangle Bounds
         {
             get
             {
-                return new Rectangle((int)(Position.X), (int)(Position.Y), PlayerSize.X, PlayerSize.Y);
+                return new Rectangle((int)(relativeBounds.X + Position.X), (int)(relativeBounds.Y + Position.Y), relativeBounds.Width, relativeBounds.Height);
             }
         }
         //public Physics physics;
-        public float speed = 2f;
+        public float Speed { get; protected set; }
+        public float FallingSpeed { get; protected set; }
+
+        public bool Grounded { get; protected set; }
 
 
-        public Player(Game game, Vector2 PlayerPosition, Point PlayerSize, float speed):base(game)
+        public Player(Game game, Vector2 PlayerPosition, Rectangle relativeBounds, float speed)
+            : base(game)
         {
             Position = PlayerPosition;
-            this.PlayerSize = PlayerSize;
-
+            this.relativeBounds = relativeBounds;
+            Speed = speed;
 
         }
 
         public override void Update(GameTime gameTime)
         {
-            InputController controller = (InputController)Game.Services.GetService(typeof(InputController));
 
-            Vector2 move = Vector2.Zero;
-
-            //Movement
-            if (controller.gamePadState.ThumbSticks.Left.X != 0f)
-                move += controller.gamePadState.ThumbSticks.Left * Vector2.UnitX;
-            if (controller.gamePadState.ThumbSticks.Left.Y != 0f)
-                move -= controller.gamePadState.ThumbSticks.Left * Vector2.UnitY;
-            if (controller.keyboardState.IsKeyDown(Keys.W))
-                move.Y = -1;
-            if (controller.keyboardState.IsKeyDown(Keys.S))
-                move.Y = 1;
-            if (controller.keyboardState.IsKeyDown(Keys.A))
-                move.X = -1;
-            if (controller.keyboardState.IsKeyDown(Keys.D))
-                move.X = 1;
-
-            Position += move * speed;
         }
+
+        public bool TryWalk(Vector2 rel, ICollidable collision)
+        {
+            int tries = -9;
+            while (collision.Collide(new Rectangle(Bounds.X + (int)Math.Round(rel.X), Bounds.Y + (int)Math.Round(rel.Y) - tries, Bounds.Width, Bounds.Height)) &&
+                tries < 9)
+            {
+                tries++;
+            }
+            if (tries == 9)
+            {
+                return false;
+            }
+            if (tries == -9)
+            {
+                Grounded = false;
+                move(rel);
+                return true;
+            }
+
+            move(rel - Vector2.UnitY * tries);
+            return true;
+        }
+        public bool TryMove(Vector2 rel, ICollidable collision)
+        {
+            if (collision.Collide(new Rectangle(Bounds.X + (int)Math.Round(rel.X), Bounds.Y + (int)Math.Round(rel.Y), Bounds.Width, Bounds.Height)))
+            {
+                return false;
+            }
+
+            move(rel);
+            return true;
+        }
+
+        public void Fall(GameTime gameTime, ICollidable collision)
+        {
+            FallingSpeed += 100 * (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            Grounded = !TryMove(Vector2.UnitY * (float)gameTime.ElapsedGameTime.TotalSeconds * FallingSpeed, collision);
+            if (Grounded)
+            {
+                FallingSpeed = 0;
+                TryWalk(Vector2.Zero, collision) ;
+            }
+        }
+
 
         public override void Draw(SpriteBatch spriteBatch/*, GameTime gameTime*/)
         {
-            Primitives2D.FillRectangle(spriteBatch, new Rectangle(
-                (int) Position.X, (int) Position.Y, 
-                PlayerSize.X, PlayerSize.Y), 
+            Primitives2D.FillRectangle(spriteBatch, Bounds,
                 Color.Brown);
         }
 
-        
+
 
         /*protected bool Collide()
         {
@@ -74,5 +104,11 @@ namespace Innlevering_2.GameObjects
 
             return (playerRect.Intersects(mapFrameRect));
         }*/
+
+        internal void jump()
+        {
+            Grounded = false;
+            FallingSpeed = -100;
+        }
     }
 }
