@@ -28,6 +28,7 @@ namespace Innlevering_2.GameObjects
 
         public bool Grounded { get; protected set; }
 
+        private int walkSlope = 5;
 
         public Player(Game game, Vector2 PlayerPosition, Rectangle relativeBounds, float speed)
             : base(game)
@@ -45,24 +46,24 @@ namespace Innlevering_2.GameObjects
 
         public bool TryWalk(Vector2 rel, ICollidable collision)
         {
-            int tries = -9;
-            while (collision.Collide(new Rectangle(Bounds.X + (int)Math.Round(rel.X), Bounds.Y + (int)Math.Round(rel.Y) - tries, Bounds.Width, Bounds.Height)) &&
-                tries < 9)
+            int tries = -walkSlope;
+            while (collision.Collide(new Rectangle(Bounds.X + (int)Math.Round(rel.X * (walkSlope - tries) / walkSlope), Bounds.Y + (int)Math.Round(rel.Y) - tries, Bounds.Width, Bounds.Height)) &&
+                tries < walkSlope)
             {
                 tries++;
             }
-            if (tries == 9)
+            if (tries == walkSlope)
             {
                 return false;
             }
-            if (tries == -9)
+            if (tries == -walkSlope)
             {
                 Grounded = false;
                 move(rel);
                 return true;
             }
 
-            move(rel - Vector2.UnitY * tries);
+            move(rel * new Vector2((walkSlope - tries) / walkSlope, 1) - Vector2.UnitY * tries);
             return true;
         }
         public bool TryMove(Vector2 rel, ICollidable collision)
