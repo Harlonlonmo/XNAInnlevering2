@@ -54,7 +54,7 @@ namespace Innlevering_2
 
             for (int x = rect.X; x < rect.Width + rect.X; x++)
             {
-                if (collisionData[x + rect.Y * mask.Width] == 0xFF000000)
+                if (collisionData[x + rect.Y * mask.Width] != 0xFFFFFFFF)
                 {
                     return true;
                 }
@@ -63,7 +63,7 @@ namespace Innlevering_2
             {
                 for (int x = rect.X; x < rect.Width + rect.X; x++)
                 {
-                    if (collisionData[x + (rect.Y + rect.Height - 1) * mask.Width] == 0xFF000000)
+                    if (collisionData[x + (rect.Y + rect.Height - 1) * mask.Width] != 0xFFFFFFFF)
                     {
                         return true;
                     }
@@ -71,7 +71,7 @@ namespace Innlevering_2
             }
             for (int y = rect.Y; y < rect.Height + rect.Y; y++)
             {
-                if (collisionData[rect.X + y * mask.Width] == 0xFF000000)
+                if (collisionData[rect.X + y * mask.Width] != 0xFFFFFFFF)
                 {
                     return true;
                 }
@@ -80,7 +80,7 @@ namespace Innlevering_2
             {
                 for (int y = rect.Y; y < rect.Height + rect.Y; y++)
                 {
-                    if (collisionData[(rect.X + rect.Width - 1) + y * mask.Width] == 0xFF000000)
+                    if (collisionData[(rect.X + rect.Width - 1) + y * mask.Width] != 0xFFFFFFFF)
                     {
                         return true;
                     }

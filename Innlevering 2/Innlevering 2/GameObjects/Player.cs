@@ -92,7 +92,9 @@ namespace Innlevering_2.GameObjects
 
         public override void Draw(SpriteBatch spriteBatch/*, GameTime gameTime*/)
         {
-            Primitives2D.FillRectangle(spriteBatch, Bounds,
+
+            //debug
+            Primitives2D.DrawRectangle(spriteBatch, Bounds,
                 Color.Brown);
         }
 

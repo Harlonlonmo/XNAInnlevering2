@@ -56,11 +56,6 @@ namespace Innlevering_2
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            imageLoader.load("Background");
-            fontLoader.load("ButtonFont");
-            soundLoader.load("test");
-            soundLoader.load("test2");
         }
 
         protected override void Update(GameTime gameTime)

@@ -18,12 +18,21 @@ namespace Innlevering_2
 
         public T get(String key)
         {
-            return content[key];
+            if (content.ContainsKey(key))
+            {
+                return content[key];
+            }
+            else
+            {
+                content.Add(key, Game.Content.Load<T>(key));
+                return content[key];
+            } 
         }
 
-        public void load(String key)
+        public void Load(string key)
         {
             content.Add(key, Game.Content.Load<T>(key));
         }
+
     }
 }

@@ -9,6 +9,7 @@ using Innlevering_2.GameObjects;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 using C3.XNA;
+using Innlevering_2.Graphics;
 
 namespace Innlevering_2.GameStates
 {
@@ -17,16 +18,19 @@ namespace Innlevering_2.GameStates
 
         Texture2D _Planet;
         Texture2D _AlphaMap;
-        
+
         Level level;
         Player player;
+        Sprite reticule;
+        float reticuleAngle;
 
         public maskTest(Game game)
             : base(game)
         {
             LoadContent(game.Content);
             level = new DestructableLevel(Game, _Planet, _AlphaMap);
-            player = new Player(Game, new Vector2(200, 0), new Rectangle(0,0,20,20), 50);
+            player = new Player(Game, new Vector2(200, 0), new Rectangle(0, 0, 20, 20), 50);
+            reticule = new Sprite(Game, "reticule");
         }
 
         public void LoadContent(ContentManager Content)
@@ -47,6 +51,20 @@ namespace Innlevering_2.GameStates
             }
 
             InputController controller = (InputController)Game.Services.GetService(typeof(InputController));
+
+            if (controller.ButtonWasPressed(Buttons.RightTrigger))
+            {
+                ((DestructableLevel)level).removeCircle(getReticulePosition(), 20);
+            }
+
+            //reticule position
+
+            if (controller.gamePadState.ThumbSticks.Right.LengthSquared() > .75f)
+            {
+                reticuleAngle = (float)Math.Atan2(controller.gamePadState.ThumbSticks.Right.Y, controller.gamePadState.ThumbSticks.Right.X);
+
+            }
+
 
             Vector2 move = Vector2.Zero;
 
@@ -79,19 +97,27 @@ namespace Innlevering_2.GameStates
                 player.TryMove(move * player.Speed * (float)gameTime.ElapsedGameTime.TotalSeconds, level);
                 player.Fall(gameTime, level);
             }
-            
+
 
         }
 
-        
+
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
 
             level.Draw(spriteBatch);
             spriteBatch.Begin();
+
+            reticule.Draw(spriteBatch, getReticulePosition(), gameTime);
+
             player.Draw(spriteBatch);
             spriteBatch.End();
+        }
+
+        public Vector2 getReticulePosition()
+        {
+            return new Vector2((float)Math.Cos(reticuleAngle), -(float)Math.Sin(reticuleAngle)) * 40 + player.Position;
         }
     }
 }
