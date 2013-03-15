@@ -30,7 +30,7 @@ namespace Innlevering_2
             Position += delta;
         }
 
-        public virtual void Draw(SpriteBatch spriteBatch)
+        public virtual void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
         }
 

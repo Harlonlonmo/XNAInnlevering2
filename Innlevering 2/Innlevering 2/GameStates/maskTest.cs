@@ -19,18 +19,14 @@ namespace Innlevering_2.GameStates
         Texture2D _Planet;
         Texture2D _AlphaMap;
 
-        Level level;
-        Player player;
-        Sprite reticule;
-        float reticuleAngle;
+        World world;
 
         public maskTest(Game game)
             : base(game)
         {
-            LoadContent(game.Content);
-            level = new DestructableLevel(Game, _Planet, _AlphaMap);
-            player = new Player(Game, new Vector2(200, 0), new Rectangle(0, 0, 20, 20), 50);
-            reticule = new Sprite(Game, "reticule");
+            LoadContent(Game.Content);
+            world = new World(Game,new DestructableLevel(Game, _Planet, _AlphaMap));
+
         }
 
         public void LoadContent(ContentManager Content)
@@ -46,59 +42,10 @@ namespace Innlevering_2.GameStates
             MouseState ms = Mouse.GetState();
             if (ms.LeftButton == ButtonState.Pressed)
             {
-                ((DestructableLevel)level).removeCircle(new Vector2(ms.X, ms.Y), 20);
+                ((DestructableLevel)world.Level).removeCircle(new Vector2(ms.X, ms.Y), 20);
 
             }
-
-            InputController controller = (InputController)Game.Services.GetService(typeof(InputController));
-
-            if (controller.ButtonWasPressed(Buttons.RightTrigger))
-            {
-                ((DestructableLevel)level).removeCircle(getReticulePosition(), 20);
-            }
-
-            //reticule position
-
-            if (controller.gamePadState.ThumbSticks.Right.LengthSquared() > .75f)
-            {
-                reticuleAngle = (float)Math.Atan2(controller.gamePadState.ThumbSticks.Right.Y, controller.gamePadState.ThumbSticks.Right.X);
-
-            }
-
-
-            Vector2 move = Vector2.Zero;
-
-            //Movement
-            if (controller.gamePadState.ThumbSticks.Left.X != 0f)
-                move += controller.gamePadState.ThumbSticks.Left * Vector2.UnitX;
-            if (controller.gamePadState.ThumbSticks.Left.Y != 0f)
-                move -= controller.gamePadState.ThumbSticks.Left * Vector2.UnitY;
-            if (controller.keyboardState.IsKeyDown(Keys.W))
-                move.Y = -1;
-            if (controller.keyboardState.IsKeyDown(Keys.S))
-                move.Y = 1;
-            if (controller.keyboardState.IsKeyDown(Keys.A))
-                move.X = -1;
-            if (controller.keyboardState.IsKeyDown(Keys.D))
-                move.X = 1;
-
-
-
-            if (player.Grounded)
-            {
-                if (controller.KeyWasPressed(Keys.Space) || controller.ButtonWasPressed(Buttons.A))
-                {
-                    player.jump();
-                }
-                player.TryWalk(move * player.Speed * (float)gameTime.ElapsedGameTime.TotalSeconds, level);
-            }
-            else
-            {
-                player.TryMove(move * player.Speed * (float)gameTime.ElapsedGameTime.TotalSeconds, level);
-                player.Fall(gameTime, level);
-            }
-
-
+            world.Update(gameTime);
         }
 
 
@@ -106,18 +53,12 @@ namespace Innlevering_2.GameStates
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
 
-            level.Draw(spriteBatch);
-            spriteBatch.Begin();
-
-            reticule.Draw(spriteBatch, getReticulePosition(), gameTime);
-
-            player.Draw(spriteBatch);
-            spriteBatch.End();
+            //spriteBatch.Begin();
+            //spriteBatch.Draw(backgroundtexture, Vector2.Zero, Color.White);
+            //spriteBatch.End();
+            world.Draw(spriteBatch, gameTime);
         }
 
-        public Vector2 getReticulePosition()
-        {
-            return new Vector2((float)Math.Cos(reticuleAngle), -(float)Math.Sin(reticuleAngle)) * 40 + player.Position;
-        }
+        
     }
 }

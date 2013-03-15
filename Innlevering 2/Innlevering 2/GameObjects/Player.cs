@@ -9,10 +9,12 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 using C3.XNA;
+using Innlevering_2.Graphics;
+using Innlevering_2.Guns;
 
 namespace Innlevering_2.GameObjects
 {
-    class Player : GameObject
+    public class Player : GameObject
     {
         private Rectangle relativeBounds;
         public Rectangle Bounds
@@ -30,18 +32,78 @@ namespace Innlevering_2.GameObjects
 
         private int walkSlope = 5;
 
+        private Sprite reticule;
+        private float reticuleAngle;
+
+        private Gun wepon;
+
         public Player(Game game, Vector2 PlayerPosition, Rectangle relativeBounds, float speed)
             : base(game)
         {
             Position = PlayerPosition;
             this.relativeBounds = relativeBounds;
             Speed = speed;
-
+            reticule = new Sprite(Game, "reticule");
+            wepon = new GranadeLauncher(Game);
         }
 
-        public override void Update(GameTime gameTime)
+        public void Update(World world, GameTime gameTime)
         {
 
+            wepon.Update(gameTime);
+
+            InputController controller = (InputController)Game.Services.GetService(typeof(InputController));
+
+            if (controller.ButtonWasPressed(Buttons.RightTrigger))
+            {
+                wepon.Fire(world, this, gameTime);
+                //((DestructableLevel)level).removeCircle(getReticulePosition(), 20);
+            }
+            if (controller.ButtonWasPressed(Buttons.X))
+            {
+                wepon.Reload();
+                //((DestructableLevel)level).removeCircle(getReticulePosition(), 20);
+            }
+            //reticule position
+
+            if (controller.gamePadState.ThumbSticks.Right.LengthSquared() > .75f)
+            {
+                reticuleAngle = (float)Math.Atan2(controller.gamePadState.ThumbSticks.Right.Y, controller.gamePadState.ThumbSticks.Right.X);
+
+            }
+
+
+            Vector2 move = Vector2.Zero;
+
+            //Movement
+            if (controller.gamePadState.ThumbSticks.Left.X != 0f)
+                move += controller.gamePadState.ThumbSticks.Left * Vector2.UnitX;
+            if (controller.gamePadState.ThumbSticks.Left.Y != 0f)
+                move -= controller.gamePadState.ThumbSticks.Left * Vector2.UnitY;
+            if (controller.keyboardState.IsKeyDown(Keys.W))
+                move.Y = -1;
+            if (controller.keyboardState.IsKeyDown(Keys.S))
+                move.Y = 1;
+            if (controller.keyboardState.IsKeyDown(Keys.A))
+                move.X = -1;
+            if (controller.keyboardState.IsKeyDown(Keys.D))
+                move.X = 1;
+
+
+
+            if (Grounded)
+            {
+                if (controller.KeyWasPressed(Keys.Space) || controller.ButtonWasPressed(Buttons.A))
+                {
+                    jump();
+                }
+                TryWalk(move * Speed * (float)gameTime.ElapsedGameTime.TotalSeconds, world.Level);
+            }
+            else
+            {
+                TryMove(move * Speed * (float)gameTime.ElapsedGameTime.TotalSeconds, world.Level);
+                Fall(gameTime, world.Level);
+            }
         }
 
         public bool TryWalk(Vector2 rel, ICollidable collision)
@@ -90,15 +152,25 @@ namespace Innlevering_2.GameObjects
         }
 
 
-        public override void Draw(SpriteBatch spriteBatch/*, GameTime gameTime*/)
+        public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
 
             //debug
             Primitives2D.DrawRectangle(spriteBatch, Bounds,
                 Color.Brown);
+
+            reticule.Draw(spriteBatch, getReticulePosition(), gameTime);
         }
 
+        public Vector2 getReticulePosition()
+        {
+            return new Vector2((float)Math.Cos(reticuleAngle), -(float)Math.Sin(reticuleAngle)) * 40 + Position;
+        }
 
+        public void Damage(Projectile projectile)
+        {
+            // TODO take damage
+        }
 
         /*protected bool Collide()
         {

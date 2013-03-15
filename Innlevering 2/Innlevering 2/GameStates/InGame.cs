@@ -38,7 +38,7 @@ namespace Innlevering_2.GameStates
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             spriteBatch.Begin();
-            player.Draw(spriteBatch);
+            player.Draw(spriteBatch, gameTime);
             spriteBatch.End();
         }
     }
