@@ -21,19 +21,16 @@ namespace Innlevering_2
 
         public virtual bool Collide(Rectangle rect)
         {
-
             return false;
         }
 
         public virtual bool Collide(Point point)
         {
-
             return false;
         }
 
         public virtual void Draw(SpriteBatch spriteBatch)
         {
-
         }
 
     }

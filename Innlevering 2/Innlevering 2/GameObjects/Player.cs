@@ -35,7 +35,7 @@ namespace Innlevering_2.GameObjects
         private Sprite reticule;
         private float reticuleAngle;
 
-        private Gun wepon;
+        public Gun Wepon { get; protected set; }
 
         public Player(Game game, Vector2 PlayerPosition, Rectangle relativeBounds, float speed)
             : base(game)
@@ -44,24 +44,25 @@ namespace Innlevering_2.GameObjects
             this.relativeBounds = relativeBounds;
             Speed = speed;
             reticule = new Sprite(Game, "reticule");
-            wepon = new GranadeLauncher(Game);
+            Wepon = new HandGun(Game);
         }
 
         public void Update(World world, GameTime gameTime)
         {
 
-            wepon.Update(gameTime);
+            Wepon.Update(gameTime);
 
             InputController controller = (InputController)Game.Services.GetService(typeof(InputController));
 
-            if (controller.ButtonWasPressed(Buttons.RightTrigger))
+            //if (controller.ButtonWasPressed(Buttons.RightTrigger))
+            if (controller.gamePadState.IsButtonDown(Buttons.RightTrigger))
             {
-                wepon.Fire(world, this, gameTime);
+                Wepon.Fire(world, this, gameTime);
                 //((DestructableLevel)level).removeCircle(getReticulePosition(), 20);
             }
             if (controller.ButtonWasPressed(Buttons.X))
             {
-                wepon.Reload();
+                Wepon.Reload();
                 //((DestructableLevel)level).removeCircle(getReticulePosition(), 20);
             }
             //reticule position
@@ -76,9 +77,9 @@ namespace Innlevering_2.GameObjects
             Vector2 move = Vector2.Zero;
 
             //Movement
-            if (controller.gamePadState.ThumbSticks.Left.X != 0f)
+            if (Math.Abs(controller.gamePadState.ThumbSticks.Left.X) >= 0.2f)
                 move += controller.gamePadState.ThumbSticks.Left * Vector2.UnitX;
-            if (controller.gamePadState.ThumbSticks.Left.Y != 0f)
+            if (Math.Abs(controller.gamePadState.ThumbSticks.Left.Y) >= 0.2f)
                 move -= controller.gamePadState.ThumbSticks.Left * Vector2.UnitY;
             if (controller.keyboardState.IsKeyDown(Keys.W))
                 move.Y = -1;
@@ -159,7 +160,7 @@ namespace Innlevering_2.GameObjects
             Primitives2D.DrawRectangle(spriteBatch, Bounds,
                 Color.Brown);
 
-            reticule.Draw(spriteBatch, getReticulePosition(), gameTime);
+            reticule.DrawCenter(spriteBatch, getReticulePosition(), gameTime);
         }
 
         public Vector2 getReticulePosition()

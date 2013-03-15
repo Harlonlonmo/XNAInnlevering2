@@ -35,7 +35,7 @@ namespace Innlevering_2
             mouseChanged = mouseState != oldMs;
             keyboardState = Keyboard.GetState();
             keyboardChanged = keyboardState != oldKs;
-            gamePadState = GamePad.GetState(PlayerIndex.One);
+            gamePadState = GamePad.GetState(PlayerIndex.One, GamePadDeadZone.None);
             gamePadChanged = gamePadState != oldGs;
 
         }
