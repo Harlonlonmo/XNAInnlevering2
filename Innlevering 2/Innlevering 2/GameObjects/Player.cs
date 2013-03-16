@@ -16,6 +16,9 @@ namespace Innlevering_2.GameObjects
 {
     public class Player : GameObject
     {
+        //Kenneth: testing av keyboard siden jeg ikke har xbox-kontroller med ledning
+        public KeyboardState KeyboardState;
+
         private Rectangle relativeBounds;
         public Rectangle Bounds
         {
@@ -53,14 +56,15 @@ namespace Innlevering_2.GameObjects
             Wepon.Update(gameTime);
 
             InputController controller = (InputController)Game.Services.GetService(typeof(InputController));
+            KeyboardState = Keyboard.GetState();
 
             //if (controller.ButtonWasPressed(Buttons.RightTrigger))
-            if (controller.gamePadState.IsButtonDown(Buttons.RightTrigger))
+            if (controller.gamePadState.IsButtonDown(Buttons.RightTrigger) || KeyboardState.IsKeyDown(Keys.E))
             {
                 Wepon.Fire(world, this, gameTime);
                 //((DestructableLevel)level).removeCircle(getReticulePosition(), 20);
             }
-            if (controller.ButtonWasPressed(Buttons.X))
+            if (controller.ButtonWasPressed(Buttons.X) || KeyboardState.IsKeyDown(Keys.R))
             {
                 Wepon.Reload();
                 //((DestructableLevel)level).removeCircle(getReticulePosition(), 20);
