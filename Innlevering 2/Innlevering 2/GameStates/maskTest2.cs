@@ -32,7 +32,7 @@ namespace Innlevering_2.GameStates
             LoadContent(Game.Content);
             world = new World(Game,new DestructableLevel(Game, _Planet, _AlphaMap));
             pauseMenu = new InGameMenu(Game);
-            world.Players.Add(new Player(Game, PlayerIndex.One, new Vector2(200, 200), new Rectangle(-10, -10, 20, 20), 200));
+            world.Players.Add(new Player(Game, PlayerIndex.One, new Vector2(200, 200)));
             camera1 = new Camera(world.Players[0], world, Vector2.Zero, new Rectangle(0, 0, Game.Window.ClientBounds.Width, Game.Window.ClientBounds.Height));
         }
 

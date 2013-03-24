@@ -7,14 +7,14 @@ namespace Innlevering_2.Guns
 {
     public class NinjaRope : Gun
     {
-        public NinjaRope():base(game, textureName, cooldown, magazineSize, reloadTime)
+        public NinjaRope(Game game):base(game, textureName, cooldown, magazineSize, reloadTime)
         {
 
         }
 
-        public override void Fire(World world, GameObjects.Player player, Microsoft.Xna.Framework.GameTime gameTime)
+        public override void Fire(World world, Player player, GameTime gameTime)
         {
-            throw new NotImplementedException();
+             
         }
     }
 }

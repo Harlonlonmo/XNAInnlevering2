@@ -28,6 +28,9 @@ namespace Innlevering_2.GameObjects
         public float Speed { get; protected set; }
         public float FallingSpeed { get; protected set; }
 
+        private float gravity = 1000f;
+        private float jumpForce = 400f;
+
         public bool Grounded { get; protected set; }
 
         private int walkSlope = 5;
@@ -38,19 +41,31 @@ namespace Innlevering_2.GameObjects
         private PlayerIndex playerIndex;
         private GamePadController controller;
 
-        public Gun Wepon { get; protected set; }
+        public Gun Wepon
+        {
+            get
+            {
+                return guns[activeGun];
+            }
+        }
+
+        private List<Gun> guns;
+        private int activeGun = 0;
 
         public int Health { get; protected set; }
 
-        public Player(Game game, PlayerIndex playerIndex, Vector2 PlayerPosition, Rectangle relativeBounds, float speed)
+        public Player(Game game, PlayerIndex playerIndex, Vector2 PlayerPosition)
             : base(game)
         {
+            guns = new List<Gun>(new Gun[]{
+                new GrenadeLauncher(Game),
+                new HandGun(Game)}
+            );
             this.playerIndex = playerIndex;
             Position = PlayerPosition;
-            this.relativeBounds = relativeBounds;
-            Speed = speed;
+            relativeBounds = new Rectangle(-10, -10, 20, 20);
+            Speed = 200;
             reticule = new Sprite(Game, "reticule");
-            Wepon = new GrenadeLauncher(Game);
             controller = new GamePadController(playerIndex);
         }
 
@@ -83,8 +98,8 @@ namespace Innlevering_2.GameObjects
             //Movement
             if (Math.Abs(controller.gamePadState.ThumbSticks.Left.X) >= 0.2f)
                 move += controller.gamePadState.ThumbSticks.Left * Vector2.UnitX;
-            if (Math.Abs(controller.gamePadState.ThumbSticks.Left.Y) >= 0.2f)
-                move -= controller.gamePadState.ThumbSticks.Left * Vector2.UnitY;
+            //if (Math.Abs(controller.gamePadState.ThumbSticks.Left.Y) >= 0.2f)
+            //    move -= controller.gamePadState.ThumbSticks.Left * Vector2.UnitY;
 
 
 
@@ -144,7 +159,7 @@ namespace Innlevering_2.GameObjects
             if (Grounded)
             {
                 FallingSpeed = 0;
-                TryWalk(Vector2.Zero, collision) ;
+                TryWalk(Vector2.Zero, collision);
             }
         }
 
