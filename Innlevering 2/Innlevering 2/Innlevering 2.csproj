@@ -128,7 +128,8 @@
     <Compile Include="GUI\InGameMenu.cs" />
     <Compile Include="Gun.cs" />
     <Compile Include="Guns\HandGun.cs" />
-    <Compile Include="Guns\GranadeLauncher.cs" />
+    <Compile Include="Guns\GrenadeLauncher.cs" />
+    <Compile Include="Guns\NinjaRope.cs" />
     <Compile Include="ICollidable.cs" />
     <Compile Include="Graphics\IDrawable.cs" />
     <Compile Include="InputController.cs" />

@@ -40,6 +40,8 @@ namespace Innlevering_2.GameObjects
 
         public Gun Wepon { get; protected set; }
 
+        public int Health { get; protected set; }
+
         public Player(Game game, PlayerIndex playerIndex, Vector2 PlayerPosition, Rectangle relativeBounds, float speed)
             : base(game)
         {
@@ -48,7 +50,7 @@ namespace Innlevering_2.GameObjects
             this.relativeBounds = relativeBounds;
             Speed = speed;
             reticule = new Sprite(Game, "reticule");
-            Wepon = new GranadeLauncher(Game);
+            Wepon = new GrenadeLauncher(Game);
             controller = new GamePadController(playerIndex);
         }
 
@@ -136,7 +138,7 @@ namespace Innlevering_2.GameObjects
 
         public void Fall(GameTime gameTime, ICollidable collision)
         {
-            FallingSpeed += 100 * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            FallingSpeed += 400 * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             Grounded = !TryMove(Vector2.UnitY * (float)gameTime.ElapsedGameTime.TotalSeconds * FallingSpeed, collision);
             if (Grounded)
@@ -178,7 +180,7 @@ namespace Innlevering_2.GameObjects
         internal void jump()
         {
             Grounded = false;
-            FallingSpeed = -100;
+            FallingSpeed = -400;
         }
     }
 }

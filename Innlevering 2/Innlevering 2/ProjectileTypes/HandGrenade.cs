@@ -13,10 +13,10 @@ namespace Innlevering_2.ProjectileTypes
 
         private float timer;
 
-        public HandGrenade(Player player, Vector2 spawnPosition, Vector2 spawnSpeed)
+        public HandGrenade(Player player, Vector2 spawnPosition, Vector2 spawnSpeed, float fuse)
             : base("RPG", new Rectangle(-5, -5, 10, 10), 0, Vector2.UnitY * 150, 15, 10, true, player, spawnPosition, spawnSpeed)
         {
-            timer = 5;
+            timer = fuse;
         }
 
         public override void Update(World world, List<Player> players, GameTime gameTime)
