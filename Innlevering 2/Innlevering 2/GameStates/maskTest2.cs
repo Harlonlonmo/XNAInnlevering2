@@ -6,32 +6,42 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Audio;
 using Innlevering_2.GameObjects;
-using Innlevering_2.GUI;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
+using C3.XNA;
+using Innlevering_2.Graphics;
+using Innlevering_2.GUI;
 
 namespace Innlevering_2.GameStates
 {
-    public class InGame : GameState
+    public class maskTest2 : GameState
     {
-        Player player;
 
+        Texture2D _Planet;
+        Texture2D _AlphaMap;
 
-        SoundEffectInstance test; 
-        SoundEffectInstance test2;
+        World world;
 
+        Camera camera1;
 
         InGameMenu pauseMenu;
 
-
-        public InGame(Game game) : base(game) 
+        public maskTest2(Game game)
+            : base(game)
         {
-            player = new Player(game, PlayerIndex.One, new Vector2(100f, 100f), new Rectangle(0,0,30, 30), 2f);
-            test = ((ContentLoader<SoundEffect>)Game.Services.GetService(typeof(ContentLoader<SoundEffect>))).get("test").CreateInstance();
-            test2 = ((ContentLoader<SoundEffect>)Game.Services.GetService(typeof(ContentLoader<SoundEffect>))).get("test2").CreateInstance();
-            test.Play();
-            test2.IsLooped = false;
+            LoadContent(Game.Content);
+            world = new World(Game,new DestructableLevel(Game, _Planet, _AlphaMap));
             pauseMenu = new InGameMenu(Game);
+            world.Players.Add(new Player(Game, PlayerIndex.One, new Vector2(200, 200), new Rectangle(-10, -10, 20, 20), 50));
+            camera1 = new Camera(world.Players[0], world, Vector2.Zero, new Rectangle(0, 0, Game.Window.ClientBounds.Width, Game.Window.ClientBounds.Height));
         }
+
+        public void LoadContent(ContentManager Content)
+        {
+            _Planet = Content.Load<Texture2D>("RedPlanet512");
+            _AlphaMap = Content.Load<Texture2D>("Dots");
+        }
+
 
         public override void Update(GameTime gameTime)
         {
@@ -59,23 +69,37 @@ namespace Innlevering_2.GameStates
             }
             else
             {
-                if (test.State != SoundState.Playing && test2.State != SoundState.Playing)
+
+                /*if (controller.mouseState.LeftButton == ButtonState.Pressed)
                 {
-                    test2.Play();
-                }
-                player.Update(gameTime);
+                    ((DestructableLevel)world.Level).removeCircle(new Vector2(controller.mouseState.X, controller.mouseState.Y), 20);
+
+                }*/
+                world.Update(gameTime);
+                camera1.Update(gameTime);
             }
         }
 
+
+
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
+
+            //spriteBatch.Begin();
+            //spriteBatch.Draw(backgroundtexture, Vector2.Zero, Color.White);
+            //spriteBatch.End();
             spriteBatch.Begin();
-            player.Draw(spriteBatch, gameTime);
+            camera1.Draw(spriteBatch, gameTime);
+            //Primitives2D.DrawLine(spriteBatch, new Vector2(Game.Window.ClientBounds.Width / 2,0), new Vector2(Game.Window.ClientBounds.Width / 2, Game.Window.ClientBounds.Height), Color.Black);
+
             if (pauseMenu.Open)
             {
                 pauseMenu.Draw(spriteBatch, gameTime);
             }
+
             spriteBatch.End();
         }
+
+        
     }
 }

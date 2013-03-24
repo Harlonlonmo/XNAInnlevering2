@@ -29,6 +29,10 @@ namespace Innlevering_2
             return false;
         }
 
+        public virtual void Update(GameTime gameTime)
+        {
+        }
+
         public virtual void Draw(SpriteBatch spriteBatch)
         {
         }

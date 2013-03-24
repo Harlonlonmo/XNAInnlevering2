@@ -16,7 +16,8 @@ namespace Innlevering_2.GameStates
             gameMenu = new GameMenu(Game, GameMenu.Direction.Vertical);
             gameMenu.Buttons.Add(new Button(new Rectangle(50, 50, 200, 50), game, Color.Green, Color.GreenYellow, Button.TEXT_ALIGN_MID, "Game", buttonFont));
             gameMenu.Buttons.Add(new Button(new Rectangle(50, 110, 200, 50), game, Color.Green, Color.GreenYellow, Button.TEXT_ALIGN_MID, "MaskTest", buttonFont));
-            gameMenu.Buttons.Add(new Button(new Rectangle(50, 170, 200, 50), game, Color.Green, Color.GreenYellow, Button.TEXT_ALIGN_MID, "Exit", buttonFont));
+            gameMenu.Buttons.Add(new Button(new Rectangle(50, 170, 200, 50), game, Color.Green, Color.GreenYellow, Button.TEXT_ALIGN_MID, "MaskTest2", buttonFont));
+            gameMenu.Buttons.Add(new Button(new Rectangle(50, 230, 200, 50), game, Color.Green, Color.GreenYellow, Button.TEXT_ALIGN_MID, "Exit", buttonFont));
         }
 
         public override void Update(GameTime gameTime)
@@ -33,6 +34,9 @@ namespace Innlevering_2.GameStates
                     ((Game1)Game).changeState(new maskTest(Game));
                     break;
                 case 2:
+                    ((Game1)Game).changeState(new maskTest2(Game));
+                    break;
+                case 3:
                     Game.Exit();
                     break;
             }

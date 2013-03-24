@@ -23,6 +23,7 @@ namespace Innlevering_2
 
         public virtual void Update(GameTime gameTime)
         {
+
         }
 
         public void move(Vector2 delta)

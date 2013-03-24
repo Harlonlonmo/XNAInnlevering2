@@ -35,24 +35,28 @@ namespace Innlevering_2.GameObjects
         private Sprite reticule;
         private float reticuleAngle;
 
+        private PlayerIndex playerIndex;
+        private GamePadController controller;
+
         public Gun Wepon { get; protected set; }
 
-        public Player(Game game, Vector2 PlayerPosition, Rectangle relativeBounds, float speed)
+        public Player(Game game, PlayerIndex playerIndex, Vector2 PlayerPosition, Rectangle relativeBounds, float speed)
             : base(game)
         {
+            this.playerIndex = playerIndex;
             Position = PlayerPosition;
             this.relativeBounds = relativeBounds;
             Speed = speed;
             reticule = new Sprite(Game, "reticule");
-            Wepon = new HandGun(Game);
+            Wepon = new GranadeLauncher(Game);
+            controller = new GamePadController(playerIndex);
         }
 
         public void Update(World world, GameTime gameTime)
         {
-
+            controller.Update(gameTime);
             Wepon.Update(gameTime);
 
-            InputController controller = (InputController)Game.Services.GetService(typeof(InputController));
 
             //if (controller.ButtonWasPressed(Buttons.RightTrigger))
             if (controller.gamePadState.IsButtonDown(Buttons.RightTrigger))
@@ -70,9 +74,7 @@ namespace Innlevering_2.GameObjects
             if (controller.gamePadState.ThumbSticks.Right.LengthSquared() > .75f)
             {
                 reticuleAngle = (float)Math.Atan2(controller.gamePadState.ThumbSticks.Right.Y, controller.gamePadState.ThumbSticks.Right.X);
-
             }
-
 
             Vector2 move = Vector2.Zero;
 
@@ -81,20 +83,12 @@ namespace Innlevering_2.GameObjects
                 move += controller.gamePadState.ThumbSticks.Left * Vector2.UnitX;
             if (Math.Abs(controller.gamePadState.ThumbSticks.Left.Y) >= 0.2f)
                 move -= controller.gamePadState.ThumbSticks.Left * Vector2.UnitY;
-            if (controller.keyboardState.IsKeyDown(Keys.W))
-                move.Y = -1;
-            if (controller.keyboardState.IsKeyDown(Keys.S))
-                move.Y = 1;
-            if (controller.keyboardState.IsKeyDown(Keys.A))
-                move.X = -1;
-            if (controller.keyboardState.IsKeyDown(Keys.D))
-                move.X = 1;
 
 
 
             if (Grounded)
             {
-                if (controller.KeyWasPressed(Keys.Space) || controller.ButtonWasPressed(Buttons.A))
+                if (controller.ButtonWasPressed(Buttons.A))
                 {
                     jump();
                 }

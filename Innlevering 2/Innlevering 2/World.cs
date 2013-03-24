@@ -21,20 +21,19 @@ namespace Innlevering_2
         private List<Projectile> toDestroy = new List<Projectile>();
         private List<Projectile> toAdd = new List<Projectile>();
 
+        public Texture2D Image { get; protected set; }
+
         public World(Game game, Level level){
             Game = game;
             Level = level;
             Players = new List<Player>();
-            Players.Add(new Player(Game, new Vector2(200, 200), new Rectangle(-10, -10, 20, 20), 50));
             Projectiles = new List<Projectile>();
-
+            Image = new Texture2D(Game.GraphicsDevice, level.Bounds.Width, level.Bounds.Height);
         }
 
         public void Update(GameTime gameTime)
         {
-            
-
-            
+            Level.Update(gameTime);
             foreach (Projectile proj in Projectiles)
             {
                 proj.Update(this, Players, gameTime);
@@ -54,38 +53,45 @@ namespace Innlevering_2
             {
                 player.Update(this, gameTime);
             }
+            UpdateImage(gameTime);
         }
 
-
-
-        public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+        public void UpdateImage(GameTime gameTime)
         {
-            Level.Draw(spriteBatch);
-            spriteBatch.Begin();
+            RenderTarget2D target = new RenderTarget2D(Game.GraphicsDevice, Level.Bounds.Width, Level.Bounds.Height);
+            Game.GraphicsDevice.SetRenderTarget(target);
+            Game.GraphicsDevice.Clear(Color.CornflowerBlue);
+            SpriteBatch spriteBatch2 = new SpriteBatch(Game.GraphicsDevice);
+            Level.Draw(spriteBatch2);
+            spriteBatch2.Begin();
 
 
             foreach (Player player in Players)
             {
-                player.Draw(spriteBatch, gameTime);
+                player.Draw(spriteBatch2, gameTime);
             }
 
             foreach (Projectile proj in Projectiles)
             {
-                proj.Draw(spriteBatch, gameTime);
+                proj.Draw(spriteBatch2, gameTime);
             }
-            spriteBatch.End();
+            spriteBatch2.End();
+            Game.GraphicsDevice.SetRenderTarget(null);
+            Image = target;
         }
+
+
 
         internal void AddProjectile(Projectile projectile)
         {
             toAdd.Add(projectile);
-            Console.WriteLine(Projectiles);
+            //Console.WriteLine(Projectiles);
         }
 
         internal void RemoveProjectile(Projectile projectile)
         {
             toDestroy.Add(projectile);
-            Console.WriteLine(Projectiles);
+            //Console.WriteLine(Projectiles);
         }
     }
 }

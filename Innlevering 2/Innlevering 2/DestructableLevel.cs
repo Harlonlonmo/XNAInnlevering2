@@ -18,6 +18,7 @@ namespace Innlevering_2
         private Texture2D _circle;
 
         private uint[] collisionData;
+        private bool updateCollision;
 
         public DestructableLevel(Game game, Texture2D texture, Texture2D mask)
             : base(game)
@@ -29,13 +30,15 @@ namespace Innlevering_2
 
             collisionData = new uint[mask.Width * mask.Height];
             UpdateCollisionData();
+            Bounds = mask.Bounds;
         }
 
-        /*public override bool Collide(Rectangle rect)
+        public bool FullCollide(Rectangle rectangle)
         {
-            if (rect.X < 0 || rect.X + rect.Width > mask.Width || rect.Y < 0 || rect.Y + rect.Height > mask.Height) return true;
-
-            
+            Rectangle rect = new Rectangle(Math.Max(rectangle.X, 0),
+                Math.Max(rectangle.Y, 0),
+                Math.Min(rectangle.Width, mask.Width - rectangle.X),
+                Math.Min(rectangle.Height, mask.Height - rectangle.Y));
             for (int y = rect.Y; y < rect.Height + rect.Y; y++)
             {
                 for (int x = rect.X; x < rect.Width + rect.X; x++)
@@ -47,11 +50,14 @@ namespace Innlevering_2
                 }
             }
             return false;
-        }*/
-        public override bool Collide(Rectangle rect)
+        }
+        private bool collideWithGround(Rectangle rectangle)
         {
-            if (rect.X < 0 || rect.X + rect.Width > mask.Width || rect.Y < 0 || rect.Y + rect.Height > mask.Height) return true;
-
+            Rectangle rect = new Rectangle(Math.Max(rectangle.X, 0),
+                Math.Max(rectangle.Y, 0),
+                Math.Min(rectangle.Width, mask.Width - rectangle.X),
+                Math.Min(rectangle.Height, mask.Height - rectangle.Y));
+            //top
             for (int x = rect.X; x < rect.Width + rect.X; x++)
             {
                 if (collisionData[x + rect.Y * mask.Width] != 0xFFFFFFFF)
@@ -61,6 +67,7 @@ namespace Innlevering_2
             }
             if (rect.Height > 1)
             {
+                //bottom
                 for (int x = rect.X; x < rect.Width + rect.X; x++)
                 {
                     if (collisionData[x + (rect.Y + rect.Height - 1) * mask.Width] != 0xFFFFFFFF)
@@ -69,6 +76,7 @@ namespace Innlevering_2
                     }
                 }
             }
+            //left
             for (int y = rect.Y; y < rect.Height + rect.Y; y++)
             {
                 if (collisionData[rect.X + y * mask.Width] != 0xFFFFFFFF)
@@ -78,6 +86,7 @@ namespace Innlevering_2
             }
             if (rect.Width > 1)
             {
+                //right
                 for (int y = rect.Y; y < rect.Height + rect.Y; y++)
                 {
                     if (collisionData[(rect.X + rect.Width - 1) + y * mask.Width] != 0xFFFFFFFF)
@@ -87,11 +96,19 @@ namespace Innlevering_2
                 }
             }
             return false;
+        }
+
+        public override bool Collide(Rectangle rect)
+        {
+            if (rect.X < 0 || rect.X + rect.Width > mask.Width || rect.Y < 0 || rect.Y + rect.Height > mask.Height) return true;
+
+            return collideWithGround(rect);
         }/**/
 
         public void UpdateCollisionData()
         {
             mask.GetData(collisionData);
+            updateCollision = false;
         }
 
         public override bool Collide(Point point)
@@ -105,18 +122,29 @@ namespace Innlevering_2
             return false;
         }
 
+        public override void Update(GameTime gameTime)
+        {
+            if (updateCollision) UpdateCollisionData();
+        }
+
         public void removeCircle(Vector2 position, float radius)
         {
-            RenderTarget2D target = new RenderTarget2D(Game.GraphicsDevice, mask.Width, mask.Height);
-            Game.GraphicsDevice.SetRenderTarget(target);
-            SpriteBatch spriteBatch = new SpriteBatch(Game.GraphicsDevice);
-            spriteBatch.Begin();
-            spriteBatch.Draw(mask, Vector2.Zero, Color.White);
-            spriteBatch.Draw(_circle, new Rectangle((int)(position.X - radius), (int)(position.Y - radius), (int)(radius * 2), (int)(radius * 2)), Color.White);
-            spriteBatch.End();
-            Game.GraphicsDevice.SetRenderTarget(null);
-            mask = target;
-            UpdateCollisionData(/*new Rectangle((int)Math.Floor(position.X - radius), (int)Math.Floor(position.Y - radius), (int)Math.Ceiling(radius * 2), (int)Math.Ceiling(radius * 2))*/);
+            Rectangle explosion = new Rectangle((int)(position.X - radius), (int)(position.Y - radius), (int)(radius * 2), (int)(radius * 2));
+            if (FullCollide(explosion))
+            {
+                RenderTarget2D target = new RenderTarget2D(Game.GraphicsDevice, mask.Width, mask.Height);
+                Game.GraphicsDevice.SetRenderTarget(target);
+                SpriteBatch spriteBatch = new SpriteBatch(Game.GraphicsDevice);
+                spriteBatch.Begin();
+                spriteBatch.Draw(mask, Vector2.Zero, Color.White);
+                spriteBatch.Draw(_circle, explosion, Color.White);
+                spriteBatch.End();
+                Game.GraphicsDevice.SetRenderTarget(null);
+                mask = target;
+                updateCollision = true;
+                Console.WriteLine("BAM!");
+            }
+            //UpdateCollisionData(/*new Rectangle((int)Math.Floor(position.X - radius), (int)Math.Floor(position.Y - radius), (int)Math.Ceiling(radius * 2), (int)Math.Ceiling(radius * 2))*/);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -132,11 +160,11 @@ namespace Innlevering_2
 
             spriteBatch.Draw(texture, Vector2.Zero, Color.White);
 
-            MouseState ms = Mouse.GetState();
+            /*MouseState ms = Mouse.GetState();
             if (ms.LeftButton == ButtonState.Pressed)
             {
                 Primitives2D.DrawCircle(spriteBatch, new Vector2(ms.X, ms.Y), 10, 20, Color.White);
-            }
+            }*/
             spriteBatch.End();
         }
     }

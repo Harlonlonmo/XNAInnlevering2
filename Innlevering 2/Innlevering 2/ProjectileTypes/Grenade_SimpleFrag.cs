@@ -18,7 +18,7 @@ namespace Innlevering_2.ProjectileTypes
         protected override void Explode(World world)
         {
             base.Explode(world);
-            Console.WriteLine("test");
+            //Console.WriteLine("test");
             world.AddProjectile(new Grenade_Normal(Owner, Position, Vector2.Normalize(new Vector2(2, -1)) * 200));
             world.AddProjectile(new Grenade_Normal(Owner, Position, Vector2.Normalize(new Vector2(1, -2)) * 200));
             world.AddProjectile(new Grenade_Normal(Owner, Position, -Vector2.UnitY * 200));
