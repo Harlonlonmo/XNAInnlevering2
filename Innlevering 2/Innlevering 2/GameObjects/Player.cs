@@ -38,7 +38,7 @@ namespace Innlevering_2.GameObjects
         private Sprite reticule;
         private float reticuleAngle;
 
-        public Gun Wepon { get; protected set; }
+        public Gun Weapon { get; protected set; }
 
         public Player(Game game, Vector2 PlayerPosition, Rectangle relativeBounds, float speed)
             : base(game)
@@ -47,13 +47,13 @@ namespace Innlevering_2.GameObjects
             this.relativeBounds = relativeBounds;
             Speed = speed;
             reticule = new Sprite(Game, "reticule");
-            Wepon = new HandGun(Game);
+            Weapon = new HandGun(Game);
         }
 
         public void Update(World world, GameTime gameTime)
         {
 
-            Wepon.Update(gameTime);
+            Weapon.Update(gameTime);
 
             InputController controller = (InputController)Game.Services.GetService(typeof(InputController));
             KeyboardState = Keyboard.GetState();
@@ -61,12 +61,12 @@ namespace Innlevering_2.GameObjects
             //if (controller.ButtonWasPressed(Buttons.RightTrigger))
             if (controller.gamePadState.IsButtonDown(Buttons.RightTrigger) || KeyboardState.IsKeyDown(Keys.E))
             {
-                Wepon.Fire(world, this, gameTime);
+                Weapon.Fire(world, this, gameTime);
                 //((DestructableLevel)level).removeCircle(getReticulePosition(), 20);
             }
             if (controller.ButtonWasPressed(Buttons.X) || KeyboardState.IsKeyDown(Keys.R))
             {
-                Wepon.Reload();
+                Weapon.Reload();
                 //((DestructableLevel)level).removeCircle(getReticulePosition(), 20);
             }
             //reticule position
@@ -76,7 +76,6 @@ namespace Innlevering_2.GameObjects
                 reticuleAngle = (float)Math.Atan2(controller.gamePadState.ThumbSticks.Right.Y, controller.gamePadState.ThumbSticks.Right.X);
 
             }
-
 
             Vector2 move = Vector2.Zero;
 

@@ -125,6 +125,7 @@
     <Compile Include="Gun.cs" />
     <Compile Include="Guns\HandGun.cs" />
     <Compile Include="Guns\GranadeLauncher.cs" />
+    <Compile Include="Guns\Laser.cs" />
     <Compile Include="ICollidable.cs" />
     <Compile Include="Graphics\IDrawable.cs" />
     <Compile Include="InputController.cs" />
@@ -137,6 +138,7 @@
     <Compile Include="ProjectileTypes\Bullet_Normal.cs" />
     <Compile Include="ProjectileTypes\Grenade_SimpleFrag.cs" />
     <Compile Include="ProjectileTypes\Grenade_Normal.cs" />
+    <Compile Include="ProjectileTypes\Laser_Normal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />
